@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -20,7 +23,35 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Almacenar orden
+        $order = new Order();
+        $order->user_id = Auth::user()->id;
+        $order->total = $request->total;
+        $order->save();
+
+        //Obtener el id de la orden
+        $id = $order->id;
+
+        //Obtener los productos de la orden
+        $products = $request->products;
+
+        //Formatear arreglo de productos
+        $products_order = [];
+
+        foreach ($products as $product) {
+            $products_order[] = [
+                'order_id' => $id,
+                'product_id' => $product['id'],
+                'amount' => $product['amount'],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ];
+        }
+
+        //Almacenar productos de la orden
+        OrderProduct::insert($products_order);
+
+        return ['message' => 'Pedido realizado correctamente. Estará listo en unos minutos.'];
     }
 
     /**
