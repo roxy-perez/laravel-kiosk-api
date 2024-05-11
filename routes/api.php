@@ -26,10 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Orders
     Route::apiResource('/orders', OrderController::class);
+    Route::apiResource('/categories', CategoryController::class);
+    Route::apiResource('/products', ProductController::class);
 });
-
-Route::apiResource('categories', CategoryController::class);
-Route::apiResource('products', ProductController::class);
 
 //Authenticating routes
 Route::post('/register', [AuthController::class, 'register']);
